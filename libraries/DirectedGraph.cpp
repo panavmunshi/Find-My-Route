@@ -3,11 +3,11 @@
 using namespace cust_lib;
 
 bool DirectedGraph::adjacent(Vertex source, Vertex dest) {
-
+    return false;
 }
 
 vector<Vertex> DirectedGraph::neighbours(Vertex source) {
-
+    return vector<Vertex>();
 }
 
 void DirectedGraph::add_vertex(Vertex toAdd) {
@@ -23,5 +23,5 @@ void DirectedGraph::add_edge(Vertex source, Vertex dest, Edge* edge) {
 }
 
 vector<Edge*> get_edges(Vertex source, Vertex dest) {
-    
+    return vector<Edge*>();
 }
