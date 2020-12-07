@@ -1,7 +1,7 @@
 #include "graph.h"
 
 const Vertex Graph::InvalidVertex = "_CS225INVALIDVERTEX";
-const int Graph::InvalidWeight = INT_MIN;
+const Edge_Weight Graph::InvalidWeight = Edge_Weight(-1, -1, -1, "");
 const string Graph:: InvalidLabel = "_CS225INVALIDLABEL";
 const Edge Graph::InvalidEdge = Edge(Graph::InvalidVertex, Graph::InvalidVertex, Graph::InvalidWeight, Graph::InvalidLabel);
 
@@ -40,8 +40,7 @@ Graph::Graph(bool weighted, int numVertices, unsigned long seed)
         insertEdge(cur, next);
         if (weighted) 
         {
-            int weight = random.nextInt();
-            setEdgeWeight(cur, next, weight);
+            setEdgeWeight(cur, next, Edge_Weight(random.nextInt(), random.nextInt(), random.nextInt(), ""));
         }
         cur = next;
     }
@@ -62,7 +61,7 @@ Graph::Graph(bool weighted, int numVertices, unsigned long seed)
             // if insertEdge() succeeded...
             if (weighted)
                 setEdgeWeight(vertices[idx], vertices[idx + 1],
-                              random.nextInt());
+                              Edge_Weight(random.nextInt(), random.nextInt(), random.nextInt(), ""));
             ++idx;
             if (idx >= numVertices - 2) 
             {
@@ -182,7 +181,7 @@ string Graph::getEdgeLabel(Vertex source, Vertex destination) const
     return adjacency_list[source][destination].getLabel();
 }
 
-int Graph::getEdgeWeight(Vertex source, Vertex destination) const
+Edge_Weight Graph::getEdgeWeight(Vertex source, Vertex destination) const
 {
     if (!weighted)
         error("can't get edge weights on non-weighted graphs!");
@@ -273,7 +272,7 @@ Edge Graph::removeEdge(Vertex source, Vertex destination)
 }
 
 
-Edge Graph::setEdgeWeight(Vertex source, Vertex destination, int weight)
+Edge Graph::setEdgeWeight(Vertex source, Vertex destination, Edge_Weight weight)
 {
     if (assertEdgeExists(source, destination, __func__) == false)
         return InvalidEdge;
@@ -469,7 +468,7 @@ void Graph::savePNG(string title) const
             } else {
                 neatoFile << "[color=\"grey\"]";
             }
-            if (weighted && it2->second.getWeight() != -1)
+            if (weighted && it2->second.getWeight() != Graph::InvalidWeight)
                 neatoFile << "[label=\"" << it2->second.getWeight() << "\"]";
             
             neatoFile<< "[constraint = \"false\"]" << ";\n";
