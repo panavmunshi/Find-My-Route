@@ -8,6 +8,9 @@
 #include "graph.h"
 using namespace std;
 
+const string invalid_string = "invalid";
+const string valid_string = "valid";
+
 namespace cust_lib {
     class Parser {
         public:
@@ -16,6 +19,6 @@ namespace cust_lib {
 
         private:
             string fileloc;
-            void parse_line(string* to_modify, string* line_to_parse, int* no_items);
+            string parse_line(string* to_modify, string& line_to_parse, int* no_items);
     };
 };
