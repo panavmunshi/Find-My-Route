@@ -1,17 +1,18 @@
 #pragma once
 
 #include <iostream>
+#include <set>
 #include <fstream>
 #include <string>
 #include <stdlib.h>
-
+#include "graph.h"
 using namespace std;
 
 namespace cust_lib {
     class Parser {
         public:
             Parser(string fileloc);
-            void read_file();
+            Graph* read_file();
 
         private:
             string fileloc;
