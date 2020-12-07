@@ -112,6 +112,12 @@ public:
     Edge getEdge(Vertex source, Vertex destination, string flight_data) const;
 
     /**
+     * Gets all the edges in between the source and destination vertex.
+     * @param
+     */ 
+    vector<Edge> getMultiEdges(Vertex source, Vertex destination) const;
+
+    /**
      * Gets all the edges in the graph.
      * @return a vector of all the edges in the graph
      */

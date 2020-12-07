@@ -109,7 +109,7 @@ vector<Vertex> Graph::getVertices() const
     return ret;
 }
 
-Edge Graph::getEdge(Vertex source , Vertex destination, string flight_data) const
+Edge Graph::getEdge(Vertex source, Vertex destination, string flight_data) const
 {
     if(assertEdgeExists(source, destination, flight_data, __func__) == false)
         return Edge();
@@ -120,6 +120,14 @@ Edge Graph::getEdge(Vertex source , Vertex destination, string flight_data) cons
         }
     }
     return InvalidEdge;
+}
+
+vector<Edge> Graph::getMultiEdges(Vertex source, Vertex destination) const {
+    if (adjacency_list.find(source) != adjacency_list.end() &&
+        adjacency_list[source].find(destination) != adjacency_list[source].end()) {
+            return adjacency_list[source][destination];
+    }
+    return vector<Edge>();
 }
 
 vector<Edge> Graph::getEdges() const
