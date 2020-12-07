@@ -468,7 +468,7 @@ void Graph::savePNG(string title) const
             } else {
                 neatoFile << "[color=\"grey\"]";
             }
-            if (weighted && it2->second.getWeight() != Graph::InvalidWeight)
+            if (weighted && it2->second.getWeight() != Edge_Weight())
                 neatoFile << "[label=\"" << it2->second.getWeight() << "\"]";
             
             neatoFile<< "[constraint = \"false\"]" << ";\n";
