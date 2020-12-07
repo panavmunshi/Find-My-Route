@@ -37,10 +37,10 @@ Graph::Graph(bool weighted, int numVertices, unsigned long seed)
     for (size_t i = 0; i < vertices.size() - 1; ++i)
     {
         Vertex next = vertices[i + 1];
-        insertEdge(cur, next);
+        insertEdge(cur, next, "");
         if (weighted) 
         {
-            setEdgeWeight(cur, next, Edge_Weight(random.nextInt(), random.nextInt(), random.nextInt(), ""));
+            setEdgeWeight(cur, next, "", Edge_Weight(random.nextInt(), random.nextInt(), random.nextInt(), ""));
         }
         cur = next;
     }
@@ -52,7 +52,7 @@ Graph::Graph(bool weighted, int numVertices, unsigned long seed)
     random.shuffle(vertices);
     while (numFailures < 2) 
     {
-        if (!insertEdge(vertices[idx], vertices[idx + 1])) 
+        if (!insertEdge(vertices[idx], vertices[idx + 1], "")) 
         {
             ++numFailures;
         } 
@@ -60,7 +60,7 @@ Graph::Graph(bool weighted, int numVertices, unsigned long seed)
         {
             // if insertEdge() succeeded...
             if (weighted)
-                setEdgeWeight(vertices[idx], vertices[idx + 1],
+                setEdgeWeight(vertices[idx], vertices[idx + 1], "",
                               Edge_Weight(random.nextInt(), random.nextInt(), random.nextInt(), ""));
             ++idx;
             if (idx >= numVertices - 2) 
@@ -82,7 +82,7 @@ vector<Vertex> Graph::getAdjacent(Vertex source) const
     else
     {
         vector<Vertex> vertex_list;
-        unordered_map <Vertex, Edge> & map = adjacency_list[source];
+        unordered_map <Vertex, vector<Edge>> & map = adjacency_list[source];
         for (auto it = map.begin(); it != map.end(); it++)
         {
             vertex_list.push_back(it->first);
@@ -109,12 +109,17 @@ vector<Vertex> Graph::getVertices() const
     return ret;
 }
 
-Edge Graph::getEdge(Vertex source , Vertex destination) const
+Edge Graph::getEdge(Vertex source , Vertex destination, string flight_data) const
 {
-    if(assertEdgeExists(source, destination, __func__) == false)
+    if(assertEdgeExists(source, destination, flight_data, __func__) == false)
         return Edge();
-    Edge ret = adjacency_list[source][destination];
-    return ret;
+    
+    for (auto it = adjacency_list[source][destination].begin(); it != adjacency_list[source][destination].end(); ++it) {
+        if (it->getWeight().flight_data == flight_data) {
+            return *it;
+        }
+    }
+    return InvalidEdge;
 }
 
 vector<Edge> Graph::getEdges() const
@@ -134,7 +139,10 @@ vector<Edge> Graph::getEdges() const
             if(seen.find(make_pair(source, destination)) == seen.end())
             {
                 //this pair is never added to seen
-                ret.push_back(its->second);
+                //ret.push_back(its->second);
+                for (const Edge& edges : its->second) {
+                    ret.push_back(edges);
+                }
                 seen.insert(make_pair(source,destination));
                 if(!directed)
                 {
@@ -154,41 +162,73 @@ bool Graph::vertexExists(Vertex v) const
 
 bool Graph::edgeExists(Vertex source, Vertex destination) const
 {
-    return assertEdgeExists(source, destination, "");
+    return assertEdgeExists(source, destination, "", "");
 }
 
-Edge Graph::setEdgeLabel(Vertex source, Vertex destination, string label)
+Edge Graph::setEdgeLabel(Vertex source, Vertex destination, string flight_data, string label)
 {
-    if (assertEdgeExists(source, destination, __func__) == false)
+    if (assertEdgeExists(source, destination, flight_data, __func__) == false)
         return InvalidEdge;
-    Edge e = adjacency_list[source][destination];
+    
+    vector<Edge> e_list = adjacency_list[source][destination];
+    Edge e = InvalidEdge;
+    int idx = 0;
+    for (; idx < e_list.size(); idx++) {
+        if (e_list[idx].getWeight().flight_data == flight_data) {
+            e = e_list[idx];
+            break;
+        }
+    }
+
     Edge new_edge(source, destination, e.getWeight(), label);
-    adjacency_list[source][destination] = new_edge;
+    adjacency_list[source][destination].at(idx) = new_edge;
 
     if(!directed)
     {
         Edge new_edge_reverse(destination,source, e.getWeight(), label);
-        adjacency_list[destination][source] = new_edge_reverse;
+        vector<Edge> reverse_list = adjacency_list[destination][source];
+        
+        for (int i = 0; i < reverse_list.size(); i++) {
+            if (reverse_list[i].getWeight().flight_data == flight_data) {
+                adjacency_list[destination][source].at(i) = new_edge_reverse;
+                break;
+            }
+        }
+        
     }
     return new_edge;
 }
 
 
-string Graph::getEdgeLabel(Vertex source, Vertex destination) const
+string Graph::getEdgeLabel(Vertex source, Vertex destination, string flight_data) const
 {
-    if(assertEdgeExists(source, destination, __func__) == false)
+    if(assertEdgeExists(source, destination, flight_data, __func__) == false)
         return InvalidLabel;
-    return adjacency_list[source][destination].getLabel();
+    vector<Edge> edge_list = adjacency_list[source][destination];
+    for (const Edge& edges : edge_list) {
+        if (edges.getWeight().flight_data == flight_data) {
+            return edges.getLabel();
+        }
+    }
+    return "";
 }
 
-Edge_Weight Graph::getEdgeWeight(Vertex source, Vertex destination) const
+Edge_Weight Graph::getEdgeWeight(Vertex source, Vertex destination, string flight_data) const
 {
     if (!weighted)
         error("can't get edge weights on non-weighted graphs!");
 
-    if(assertEdgeExists(source, destination, __func__) == false)
+    if(assertEdgeExists(source, destination, flight_data, __func__) == false)
         return InvalidWeight;
-    return adjacency_list[source][destination].getWeight();
+    
+    vector<Edge> edge_list = adjacency_list[source][destination];
+    for (const Edge& edges : edge_list) {
+        if (edges.getWeight().flight_data == flight_data) {
+            return edges.getWeight();
+        }
+    }
+
+    return InvalidWeight;
 }
 
 void Graph::insertVertex(Vertex v)
@@ -196,13 +236,13 @@ void Graph::insertVertex(Vertex v)
     // will overwrite if old stuff was there
     removeVertex(v);
     // make it empty again
-    adjacency_list[v] = unordered_map<Vertex, Edge>();
+    adjacency_list[v] = unordered_map<Vertex, vector<Edge>>();
 }
 
 
 Vertex Graph::removeVertex(Vertex v)
 {
-
+    // TODO: Needs to be reviewed. 
     if (adjacency_list.find(v) != adjacency_list.end())
     {
         if(!directed){
@@ -230,62 +270,100 @@ Vertex Graph::removeVertex(Vertex v)
     return InvalidVertex;
 }
 
-bool Graph::insertEdge(Vertex source, Vertex destination)
+bool Graph::insertEdge(Vertex source, Vertex destination, string flight_data)
 {
     if(adjacency_list.find(source)!= adjacency_list.end() 
     && adjacency_list[source].find(destination)!= adjacency_list[source].end())
     {
-        //edge already exit
-        return false;
+        vector<Edge> edge_list = adjacency_list[source][destination];
+        bool is_found = false;
+        for (const Edge& edges : edge_list) {
+            if (edges.getWeight().flight_data == flight_data) {
+                is_found = true;
+                break;
+            }
+        }
+        if (is_found) {
+            return false;
+        }
     }
 
     if(adjacency_list.find(source)==adjacency_list.end())
     {
-        adjacency_list[source] = unordered_map<Vertex, Edge>();
+        adjacency_list[source] = unordered_map<Vertex, vector<Edge>>();
     }
         //source vertex exists
-    adjacency_list[source][destination] = Edge(source, destination);
+    adjacency_list[source][destination].push_back(Edge(source, destination));
     if(!directed)
     {
-        if(adjacency_list.find(destination)== adjacency_list.end())
+        if(adjacency_list.find(destination) == adjacency_list.end())
         {
-            adjacency_list[destination] = unordered_map<Vertex, Edge>();
+            adjacency_list[destination] = unordered_map<Vertex, vector<Edge>>();
         }
-        adjacency_list[destination][source] = Edge(source, destination);
+        adjacency_list[destination][source].push_back(Edge(source, destination));
     }
     
     return true;
 }
 
-Edge Graph::removeEdge(Vertex source, Vertex destination)
+Edge Graph::removeEdge(Vertex source, Vertex destination, string flight_data)
 {
-    if(assertEdgeExists(source, destination, __func__) == false)
+    if(assertEdgeExists(source, destination, flight_data, __func__) == false)
         return InvalidEdge;
-    Edge e = adjacency_list[source][destination];
-    adjacency_list[source].erase(destination);
+    vector<Edge> e_list = adjacency_list[source][destination];
+    Edge e = InvalidEdge;
+    for (auto it = e_list.begin(); it != e_list.end(); ++it) {
+        if (it->getWeight().flight_data == flight_data) {
+            e = *it;
+            e_list.erase(it);
+            break;
+        }
+    }
     // if undirected, remove the corresponding edge
     if(!directed)
     {
-        adjacency_list[destination].erase(source);
+        vector<Edge> reverse_list = adjacency_list[destination].at(source);
+        for (auto it = reverse_list.begin(); it != reverse_list.end(); ++it) {
+            if (it->getWeight().flight_data == flight_data) {
+                reverse_list.erase(it);
+                break;
+            }
+        }
     }
     return e;
 }
 
 
-Edge Graph::setEdgeWeight(Vertex source, Vertex destination, Edge_Weight weight)
+Edge Graph::setEdgeWeight(Vertex source, Vertex destination, string flight_data, Edge_Weight weight)
 {
-    if (assertEdgeExists(source, destination, __func__) == false)
+    if (assertEdgeExists(source, destination, flight_data, __func__) == false)
         return InvalidEdge;
-    Edge e = adjacency_list[source][destination];
+    vector<Edge> e_list = adjacency_list[source][destination];
+    Edge e = InvalidEdge;
+    int idx;
+    for (idx = 0; idx < e_list.size(); idx++) {
+        if (e_list[idx].getWeight().flight_data == flight_data) {
+            e = e_list[idx];
+            break;
+        }
+    }
     //std::cout << "setting weight: " << weight << std::endl;
     Edge new_edge(source, destination, weight, e.getLabel());
-    adjacency_list[source][destination] = new_edge;
+    adjacency_list[source][destination].at(idx) = new_edge;
 
     if(!directed)
-        {
-            Edge new_edge_reverse(destination,source, weight, e.getLabel());
-            adjacency_list[destination][source] = new_edge_reverse;
+    {
+        Edge new_edge_reverse(destination,source, weight, e.getLabel());
+        vector<Edge> rev_list = adjacency_list[destination][source];
+
+        for (int rev_idx = 0; rev_idx < rev_list.size(); rev_idx++) {
+            if (rev_list[rev_idx].getWeight().flight_data == flight_data) {
+                adjacency_list[destination][source].at(rev_idx) = new_edge_reverse;
+                break;
+            }
         }
+        
+    }
 
     return new_edge;
 }
@@ -301,14 +379,28 @@ bool Graph::assertVertexExists(Vertex v, string functionName) const
     return true;
 }
 
-bool Graph::assertEdgeExists(Vertex source, Vertex destination, string functionName) const
+bool Graph::assertEdgeExists(Vertex source, Vertex destination, string flight_data, string functionName) const
 {
     if(assertVertexExists(source,functionName) == false)
         return false;
-    if(adjacency_list[source].find(destination)== adjacency_list[source].end())
+    if(adjacency_list[source].find(destination) == adjacency_list[source].end())
     {
         if (functionName != "")
             error(functionName + " called on nonexistent edge " + source + " -> " + destination);
+        return false;
+    }
+
+    vector<Edge> edge_list = adjacency_list[source][destination];
+    bool is_found = false;
+
+    for (auto it = edge_list.begin(); it != edge_list.end(); ++it) {
+        if (it->getWeight().flight_data == flight_data) {
+            is_found = true;
+            break;
+        }
+    }
+
+    if (!is_found) {
         return false;
     }
 
@@ -320,6 +412,20 @@ bool Graph::assertEdgeExists(Vertex source, Vertex destination, string functionN
         {
             if (functionName != "")
                 error(functionName + " called on nonexistent edge " + destination + " -> " + source);
+            return false;
+        }
+
+        vector<Edge> edge_list_rev = adjacency_list[destination][source];
+        bool is_found_rev = false;
+
+        for (auto it = edge_list_rev.begin(); it != edge_list_rev.end(); ++it) {
+            if (it->getWeight().flight_data == flight_data) {
+                is_found_rev = true;
+                break;
+            }
+        }
+
+        if (!is_found_rev) {
             return false;
         }
     }
@@ -385,10 +491,12 @@ void Graph::print() const
             string vertexColumn = "    => " + ss.str();
             vertexColumn += " " ;
             cout << std::left << std::setw(26) << vertexColumn;
-            string edgeColumn = "edge label = \"" + it2->second.getLabel()+ "\"";
-            cout << std::left << std::setw(26) << edgeColumn;
-            if (weighted)
-                cout << "weight = " << it2->second.getWeight();
+            for (auto it3 = it2->second.begin(); it3 != it2->second.end(); ++it3) {
+                string edgeColumn = "edge label = \"" + it3->getLabel()+ "\"";
+                cout << std::left << std::setw(26) << edgeColumn;
+                if (weighted)
+                    cout << "weight = " << it3->getWeight();
+            }
             cout << endl;
         }
         cout << endl;
@@ -460,18 +568,20 @@ void Graph::savePNG(string title) const
             neatoFile << vertex2Text;
             neatoFile << "\"";
 
-            string edgeLabel = it2->second.getLabel();
-            if (edgeLabel == "WIN") {
-                neatoFile << "[color=\"blue\"]";
-            } else if (edgeLabel == "LOSE") {
-                neatoFile << "[color=\"red\"]";                
-            } else {
-                neatoFile << "[color=\"grey\"]";
+            for (auto it3 = it2->second.begin(); it3 != it2->second.end(); ++it) {
+                string edgeLabel = it3->getLabel();
+                if (edgeLabel == "WIN") {
+                    neatoFile << "[color=\"blue\"]";
+                } else if (edgeLabel == "LOSE") {
+                    neatoFile << "[color=\"red\"]";                
+                } else {
+                    neatoFile << "[color=\"grey\"]";
+                }
+
+                if (weighted && it3->getWeight() != Edge_Weight())
+                    neatoFile << "[label=\"" << it3->getWeight() << "\"]";
+                neatoFile<< "[constraint = \"false\"]" << ";\n";
             }
-            if (weighted && it2->second.getWeight() != Edge_Weight())
-                neatoFile << "[label=\"" << it2->second.getWeight() << "\"]";
-            
-            neatoFile<< "[constraint = \"false\"]" << ";\n";
         }
     }
 
