@@ -234,6 +234,7 @@ public:
 
     void clear();
 
+    int get_edge_count(Vertex source, Vertex dest) const;
 
     const static Vertex InvalidVertex;
     const static Edge InvalidEdge;
@@ -242,6 +243,7 @@ public:
 
 private:
     mutable unordered_map<Vertex, unordered_map<Vertex, vector<Edge>>> adjacency_list;
+    mutable unordered_map<Vertex, unordered_map<Vertex, int>> edge_count_list;
 
     bool weighted;
     bool directed;

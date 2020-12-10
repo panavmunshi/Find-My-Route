@@ -245,6 +245,7 @@ void Graph::insertVertex(Vertex v)
     removeVertex(v);
     // make it empty again
     adjacency_list[v] = unordered_map<Vertex, vector<Edge>>();
+    edge_count_list[v] = unordered_map<Vertex, int>();
 }
 
 
@@ -257,19 +258,27 @@ Vertex Graph::removeVertex(Vertex v)
             for (auto it = adjacency_list[v].begin(); it != adjacency_list[v].end(); it++)
             {
                 Vertex u = it->first;
-                adjacency_list[u].erase(v); 
+                adjacency_list[u].erase(v);
+                edge_count_list[u].erase(v);
             }
             adjacency_list.erase(v);
+            edge_count_list.erase(v);
             return v;
         }
         
         adjacency_list.erase(v);
+        edge_count_list.erase(v);
+        
         for(auto it2 = adjacency_list.begin(); it2 != adjacency_list.end(); it2++)
         {
             Vertex u = it2->first;
             if (it2->second.find(v)!=it2->second.end())
             {
                 it2->second.erase(v);
+            }
+
+            if (edge_count_list[u].find(v) != edge_count_list[u].end()) {
+                edge_count_list[u].erase(v);
             }
         }
         return v;
@@ -300,15 +309,54 @@ bool Graph::insertEdge(Vertex source, Vertex destination, string flight_data)
     {
         adjacency_list[source] = unordered_map<Vertex, vector<Edge>>();
     }
+
+    if (edge_count_list.find(destination) == edge_count_list.end()) {
+        edge_count_list[destination] = unordered_map<Vertex, int>();
+    }
         //source vertex exists
     adjacency_list[source][destination].push_back(Edge(source, destination));
+    edge_count_list[destination][source] = 1;
+
+    if (edge_count_list.find(source) != edge_count_list.end()) {
+        for (auto it = edge_count_list[source].begin(); it != edge_count_list[source].end(); ++it) {
+            if (it->first == destination) {
+                continue;
+            } else if (edge_count_list[destination].find(it->first) != edge_count_list[destination].end()) {
+                int current_val = edge_count_list[destination][it->first];
+                edge_count_list[destination][it->first] = current_val > it->second + 1 ? it->second + 1 : current_val;
+            } else {
+                edge_count_list[destination][it->first] = it->second + 1;
+            }
+            
+        }
+    }
+    
+
     if(!directed)
     {
         if(adjacency_list.find(destination) == adjacency_list.end())
         {
             adjacency_list[destination] = unordered_map<Vertex, vector<Edge>>();
         }
+
+        if (edge_count_list.find(source) == edge_count_list.end()) {
+            edge_count_list[source] = unordered_map<Vertex, int>();
+        }
         adjacency_list[destination][source].push_back(Edge(source, destination));
+        edge_count_list[source][destination] = 1;
+         
+        if (edge_count_list.find(destination) != edge_count_list.end()) {
+            for (auto it = edge_count_list[destination].begin(); it != edge_count_list[destination].end(); ++it) {
+                if (it->first == source) {
+                    continue;
+                } else if (edge_count_list[source].find(it->first) != edge_count_list[source].end()) {
+                    int current_val = edge_count_list[source][it->first];
+                    edge_count_list[source][it->first] = current_val > it->second + 1 ? it->second + 1 : current_val;
+                } else {
+                    edge_count_list[source][it->first] = it->second + 1;
+                }
+            }
+        }
     }
     
     return true;
@@ -318,7 +366,7 @@ Edge Graph::removeEdge(Vertex source, Vertex destination, string flight_data)
 {
     if(assertEdgeExists(source, destination, flight_data, __func__) == false)
         return InvalidEdge;
-    vector<Edge> e_list = adjacency_list[source][destination];
+    vector<Edge>& e_list = adjacency_list[source][destination];
     Edge e = InvalidEdge;
     for (auto it = e_list.begin(); it != e_list.end(); ++it) {
         if (it->getWeight().flight_data == flight_data) {
@@ -327,15 +375,22 @@ Edge Graph::removeEdge(Vertex source, Vertex destination, string flight_data)
             break;
         }
     }
+    if (e_list.size() == 0) {
+        edge_count_list[source].erase(destination);
+    }
+    
     // if undirected, remove the corresponding edge
     if(!directed)
     {
-        vector<Edge> reverse_list = adjacency_list[destination].at(source);
+        vector<Edge>& reverse_list = adjacency_list[destination].at(source);
         for (auto it = reverse_list.begin(); it != reverse_list.end(); ++it) {
             if (it->getWeight().flight_data == flight_data) {
                 reverse_list.erase(it);
                 break;
             }
+        }
+        if (reverse_list.size()) {
+            edge_count_list[destination].erase(source);
         }
     }
     return e;
@@ -450,6 +505,14 @@ void Graph::clear()
     adjacency_list.clear();
 }
 
+int Graph::get_edge_count(Vertex source, Vertex dest) const {
+    if (edge_count_list.find(source) != edge_count_list.end()) {
+        if (edge_count_list[source].find(dest) != edge_count_list[source].end()) {
+            return edge_count_list[source][dest];
+        }
+    }
+    return INT_MAX;
+}
 
 /**
  * Prints a graph error and quits the program.
