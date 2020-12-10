@@ -44,3 +44,5 @@ main.o:
 
 clean:
 	-rm -f *.o $(EXENAME)
+
+remake: clean all
