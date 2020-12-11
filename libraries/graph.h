@@ -109,13 +109,7 @@ public:
      * @return - if exist, return the corresponding edge
      *         - if edge doesn't exist, return Edge()
      */
-    Edge getEdge(Vertex source, Vertex destination, string flight_data) const;
-
-    /**
-     * Gets all the edges in between the source and destination vertex.
-     * @param
-     */ 
-    vector<Edge> getMultiEdges(Vertex source, Vertex destination) const;
+    Edge getEdge(Vertex source, Vertex destination) const;
 
     /**
      * Gets all the edges in the graph.
@@ -135,7 +129,7 @@ public:
      * @return - if Edge exists, true
      *         - if Edge doesn't exist, return false
      */
-    bool edgeExists(Vertex source, Vertex destination, string flight_data) const;
+    bool edgeExists(Vertex source, Vertex destination) const;
 
         /**
      * Sets the edge label of the edge between vertices u and v.
@@ -144,7 +138,7 @@ public:
      * @return - if edge exists, set the label to the corresponding edge(if not directed, set the reverse one too), return edge with new label
      *         - if edge doesn't exist, return InvalidEdge
      */
-    Edge setEdgeLabel(Vertex source, Vertex destination, string flight_data, string label);
+        Edge setEdgeLabel(Vertex source, Vertex destination, string label);
 
     /**
      * Gets the edge label of the edge between vertices u and v.
@@ -153,7 +147,7 @@ public:
      * @return - if edge exists, return edge label
      *         - if edge doesn't exist, return InvalidLabel
      */
-    string getEdgeLabel(Vertex source, Vertex destination, string flight_data) const;
+    string getEdgeLabel(Vertex source, Vertex destination) const;
 
     /**
      * Gets the weight of the edge between two vertices.
@@ -162,7 +156,7 @@ public:
      * @return - if edge exists, return edge wright
      *         - if doesn't, return InvalidWeight
      */
-    Edge_Weight getEdgeWeight(Vertex source, Vertex destination, string flight_data) const;
+    int getEdgeWeight(Vertex source, Vertex destination) const;
 
     /**
      * Inserts a new vertex into the graph and initializes its label as "".
@@ -186,7 +180,7 @@ public:
      * @param destination - the other vertex the edge is connected to
      * @return whether inserting the edge was successful
      */
-    bool insertEdge(Vertex source, Vertex destination, string flight_data, Edge_Weight weight);
+    bool insertEdge(Vertex source, Vertex destination, int weight);
 
     /**
      * Removes the edge between two vertices.
@@ -195,7 +189,7 @@ public:
      * @return - if edge exists, remove it and return removed edge
      *         - if not, return InvalidEdge
      */
-    Edge removeEdge(Vertex source, Vertex destination, string flight_data);
+    Edge removeEdge(Vertex source, Vertex destination);
 
     /**
      * Sets the weight of the edge between two vertices.
@@ -205,7 +199,9 @@ public:
      * @return - if edge exists, set edge weight and return  edge with new weight
      *         - if not, return InvalidEdge
      */
-    Edge setEdgeWeight(Vertex source, Vertex destination, string flight_data, Edge_Weight weight);
+    Edge setEdgeWeight(Vertex source, Vertex destination, int weight);
+
+    Edge insertDetails(Vertex source, Vertex dest, string flight, int arrival, int dept);
 
     /**
      * Creates a name for snapshots of the graph.
@@ -234,15 +230,23 @@ public:
 
     void clear();
 
-    int get_edge_count(Vertex source, Vertex dest) const;
+    int get_edge_count(Vertex dest, Vertex source) {
+        if (edge_dist_list.find(source) != edge_dist_list.end()) {
+            if (edge_dist_list[source].find(dest) != edge_dist_list[source].end()) {
+                return edge_dist_list[source][dest];
+            }
+        }
+
+        return INT_MAX;
+    }
 
     const static Vertex InvalidVertex;
     const static Edge InvalidEdge;
-    const static Edge_Weight InvalidWeight;
+    const static int InvalidWeight;
     const static string InvalidLabel;
 
 private:
-    mutable unordered_map<Vertex, unordered_map<Vertex, vector<Edge>>> adjacency_list;
+    mutable unordered_map<Vertex, unordered_map<Vertex, Edge>> adjacency_list;
     mutable unordered_map<Vertex, unordered_map<Vertex, int>> edge_dist_list;
 
     bool weighted;
@@ -267,7 +271,7 @@ private:
      * @param functionName - the name of the calling function to return
      *  in the event of an error
      */
-    bool assertEdgeExists(Vertex source, Vertex destination, string flight_data, string functionName) const;
+    bool assertEdgeExists(Vertex source, Vertex destination, string functionName) const;
 
 
     /**

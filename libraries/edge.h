@@ -7,12 +7,10 @@
 
 #include <string>
 #include <limits.h>
-#include "edge_struct.h"
 
 using std::string;
 
 typedef string Vertex;
-typedef edge_struct Edge_Weight;
 
 /**
  * Represents an edge in a graph; used by the Graph class.
@@ -32,7 +30,7 @@ class Edge
      * @param v - the other vertex it is connected to
      */
     Edge(Vertex u, Vertex v)
-        : source(u), dest(v), label(""), weight(Edge_Weight())
+        : source(u), dest(v), label(""), weight(-1)
     { /* nothing */
     }
 
@@ -43,7 +41,7 @@ class Edge
      * @param lbl - the edge label
      */
     Edge(Vertex u, Vertex v, string lbl)
-        : source(u), dest(v), label(lbl), weight(Edge_Weight())
+        : source(u), dest(v), label(lbl), weight(-1)
     { /* nothing */
     }
 
@@ -54,7 +52,7 @@ class Edge
      * @param w - the weight of the edge
      * @param lbl - the edge label
      */
-    Edge(Vertex u, Vertex v, Edge_Weight w, string lbl)
+    Edge(Vertex u, Vertex v, int w, string lbl)
         : source(u), dest(v), label(lbl), weight(w)
     { /* nothing */
     }
@@ -62,7 +60,7 @@ class Edge
     /**
      * Default constructor.
      */
-    Edge() : source(""), dest(""), label(""), weight(Edge_Weight())
+    Edge() : source(""), dest(""), label(""), weight(-1)
     { /* nothing */
     }
 
@@ -88,9 +86,15 @@ class Edge
     /**
      * Gets edge weight.
      */
-    Edge_Weight getWeight() const
+    int getWeight() const
     {
         return this->weight;
+    }
+
+    void insertData(string flight, int arrival, int dept) {
+        flight_name.push_back(flight);
+        arrival_time.push_back(arrival);
+        dept_time.push_back(dept);
     }
 
     /**
@@ -105,11 +109,10 @@ class Edge
             return false;
         return true;
     }
-
-    void setWeight(Edge_Weight weight_val) {
-        weight = weight_val;
-    }
 private:
     string label; /**< The edge label **/
-    Edge_Weight weight; /**< The edge weight (if in a weighed graph) **/
+    int weight; /**< The edge weight (if in a weighed graph) **/
+    std::vector<string> flight_name;
+    std::vector<int> arrival_time;
+    std::vector<int> dept_time;
 };
