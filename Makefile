@@ -39,10 +39,10 @@ Parser.o:
 main.o:
 	$(CXX) $(CXXFLAGS) main.cpp
 
-#test: output_msg catch/catchmain.cpp tests/tests.cpp readFromFile.cpp
-	#$(LD) catch/catchmain.cpp tests/tests.cpp readFromFile.cpp $(LDFLAGS) -o test
+test: Parser.o Graph.o
+	$(LD) tests/tests.cpp Parser.o Graph.o $(LDFLAGS) -o test
 
 clean:
-	-rm -f *.o $(EXENAME)
+	-rm -f *.o test $(EXENAME)
 
 remake: clean all
