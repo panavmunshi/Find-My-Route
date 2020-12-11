@@ -186,7 +186,7 @@ public:
      * @param destination - the other vertex the edge is connected to
      * @return whether inserting the edge was successful
      */
-    bool insertEdge(Vertex source, Vertex destination, string flight_data);
+    bool insertEdge(Vertex source, Vertex destination, string flight_data, Edge_Weight weight);
 
     /**
      * Removes the edge between two vertices.

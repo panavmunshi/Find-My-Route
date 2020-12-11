@@ -105,6 +105,10 @@ class Edge
             return false;
         return true;
     }
+
+    void setWeight(Edge_Weight weight_val) {
+        weight = weight_val;
+    }
 private:
     string label; /**< The edge label **/
     Edge_Weight weight; /**< The edge weight (if in a weighed graph) **/

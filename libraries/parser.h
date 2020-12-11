@@ -8,6 +8,8 @@
 #include "graph.h"
 using namespace std;
 
+#define SUPRESS
+
 const string invalid_string = "invalid";
 const string valid_string = "valid";
 
