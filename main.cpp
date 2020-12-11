@@ -25,7 +25,7 @@ int main() {
     string args;
     while (true) {
         cout << "Please choose one of the following: " << endl;
-        cout << "Enter '1': Shortest Flight route from Point A to Pqoint B" << endl;
+        cout << "Enter '1': Shortest Flight route from Point A to Point B" << endl;
         cout << "Enter '2': Shortest Flight route from Point A to Point B with constraints" << endl;
         cout << "Enter '3': ~ To be filled for BFS ~" << endl;
         
