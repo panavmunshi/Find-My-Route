@@ -135,7 +135,7 @@ public:
      * @return - if Edge exists, true
      *         - if Edge doesn't exist, return false
      */
-    bool edgeExists(Vertex source, Vertex destination) const;
+    bool edgeExists(Vertex source, Vertex destination, string flight_data) const;
 
         /**
      * Sets the edge label of the edge between vertices u and v.
@@ -243,7 +243,7 @@ public:
 
 private:
     mutable unordered_map<Vertex, unordered_map<Vertex, vector<Edge>>> adjacency_list;
-    mutable unordered_map<Vertex, unordered_map<Vertex, int>> edge_count_list;
+    mutable unordered_map<Vertex, unordered_map<Vertex, int>> edge_dist_list;
 
     bool weighted;
     bool directed;

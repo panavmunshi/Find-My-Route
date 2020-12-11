@@ -168,9 +168,9 @@ bool Graph::vertexExists(Vertex v) const
     return assertVertexExists(v, "");
 }
 
-bool Graph::edgeExists(Vertex source, Vertex destination) const
+bool Graph::edgeExists(Vertex source, Vertex destination, string flight_data) const
 {
-    return assertEdgeExists(source, destination, "", "");
+    return assertEdgeExists(source, destination, flight_data, "");
 }
 
 Edge Graph::setEdgeLabel(Vertex source, Vertex destination, string flight_data, string label)
@@ -245,7 +245,7 @@ void Graph::insertVertex(Vertex v)
     removeVertex(v);
     // make it empty again
     adjacency_list[v] = unordered_map<Vertex, vector<Edge>>();
-    edge_count_list[v] = unordered_map<Vertex, int>();
+    edge_dist_list[v] = unordered_map<Vertex, int>();
 }
 
 
@@ -259,15 +259,15 @@ Vertex Graph::removeVertex(Vertex v)
             {
                 Vertex u = it->first;
                 adjacency_list[u].erase(v);
-                edge_count_list[u].erase(v);
+                edge_dist_list[u].erase(v);
             }
             adjacency_list.erase(v);
-            edge_count_list.erase(v);
+            edge_dist_list.erase(v);
             return v;
         }
         
         adjacency_list.erase(v);
-        edge_count_list.erase(v);
+        edge_dist_list.erase(v);
         
         for(auto it2 = adjacency_list.begin(); it2 != adjacency_list.end(); it2++)
         {
@@ -277,8 +277,8 @@ Vertex Graph::removeVertex(Vertex v)
                 it2->second.erase(v);
             }
 
-            if (edge_count_list[u].find(v) != edge_count_list[u].end()) {
-                edge_count_list[u].erase(v);
+            if (edge_dist_list[u].find(v) != edge_dist_list[u].end()) {
+                edge_dist_list[u].erase(v);
             }
         }
         return v;
@@ -310,24 +310,34 @@ bool Graph::insertEdge(Vertex source, Vertex destination, string flight_data, Ed
         adjacency_list[source] = unordered_map<Vertex, vector<Edge>>();
     }
 
-    if (edge_count_list.find(destination) == edge_count_list.end()) {
-        edge_count_list[destination] = unordered_map<Vertex, int>();
+    if (edge_dist_list.find(destination) == edge_dist_list.end()) {
+        edge_dist_list[destination] = unordered_map<Vertex, int>();
     }
         //source vertex exists
     adjacency_list[source][destination].push_back(Edge(source, destination, weight, ""));
-    edge_count_list[destination][source] = 1;
+    edge_dist_list[destination][source] = weight.dist;
 
-    if (edge_count_list.find(source) != edge_count_list.end()) {
-        for (auto it = edge_count_list[source].begin(); it != edge_count_list[source].end(); ++it) {
+    if (edge_dist_list.find(source) != edge_dist_list.end()) {
+        for (auto it = edge_dist_list[source].begin(); it != edge_dist_list[source].end(); ++it) {
             if (it->first == destination) {
                 continue;
-            } else if (edge_count_list[destination].find(it->first) != edge_count_list[destination].end()) {
-                int current_val = edge_count_list[destination][it->first];
-                edge_count_list[destination][it->first] = current_val > it->second + 1 ? it->second + 1 : current_val;
+            } else if (edge_dist_list[destination].find(it->first) != edge_dist_list[destination].end()) {
+                int current_val = edge_dist_list[destination][it->first];
+                edge_dist_list[destination][it->first] = current_val > it->second + weight.dist ? it->second + weight.dist : current_val;
             } else {
-                edge_count_list[destination][it->first] = it->second + 1;
+                edge_dist_list[destination][it->first] = it->second + weight.dist;
             }
             
+        }
+    }
+
+    for (auto it2 = edge_dist_list.begin(); it2 != edge_dist_list.end(); ++it2) {
+        if (it2->first != destination && it2->first != source) {
+            unordered_map<Vertex, int>& weight_list = edge_dist_list[it2->first];
+
+            if (weight_list.find(destination) != weight_list.end()) {
+                weight_list[source] = weight_list[destination] + weight.dist;
+            }
         }
     }
     
@@ -339,21 +349,31 @@ bool Graph::insertEdge(Vertex source, Vertex destination, string flight_data, Ed
             adjacency_list[destination] = unordered_map<Vertex, vector<Edge>>();
         }
 
-        if (edge_count_list.find(source) == edge_count_list.end()) {
-            edge_count_list[source] = unordered_map<Vertex, int>();
+        if (edge_dist_list.find(source) == edge_dist_list.end()) {
+            edge_dist_list[source] = unordered_map<Vertex, int>();
         }
         adjacency_list[destination][source].push_back(Edge(source, destination, weight, ""));
-        edge_count_list[source][destination] = 1;
+        edge_dist_list[source][destination] = weight.dist;
          
-        if (edge_count_list.find(destination) != edge_count_list.end()) {
-            for (auto it = edge_count_list[destination].begin(); it != edge_count_list[destination].end(); ++it) {
+        if (edge_dist_list.find(destination) != edge_dist_list.end()) {
+            for (auto it = edge_dist_list[destination].begin(); it != edge_dist_list[destination].end(); ++it) {
                 if (it->first == source) {
                     continue;
-                } else if (edge_count_list[source].find(it->first) != edge_count_list[source].end()) {
-                    int current_val = edge_count_list[source][it->first];
-                    edge_count_list[source][it->first] = current_val > it->second + 1 ? it->second + 1 : current_val;
+                } else if (edge_dist_list[source].find(it->first) != edge_dist_list[source].end()) {
+                    int current_val = edge_dist_list[source][it->first];
+                    edge_dist_list[source][it->first] = current_val > it->second + weight.dist ? it->second + weight.dist : current_val;
                 } else {
-                    edge_count_list[source][it->first] = it->second + 1;
+                    edge_dist_list[source][it->first] = it->second + weight.dist;
+                }
+            }
+        }
+
+        for (auto it2 = edge_dist_list.begin(); it2 != edge_dist_list.end(); ++it2) {
+            if (it2->first != source && it2->first != source) {
+                unordered_map<Vertex, int>& weight_list = edge_dist_list[it2->first];
+
+                if (weight_list.find(source) != weight_list.end()) {
+                    weight_list[destination] = weight_list[source] + weight.dist;
                 }
             }
         }
@@ -376,7 +396,7 @@ Edge Graph::removeEdge(Vertex source, Vertex destination, string flight_data)
         }
     }
     if (e_list.size() == 0) {
-        edge_count_list[source].erase(destination);
+        edge_dist_list[source].erase(destination);
     }
     
     // if undirected, remove the corresponding edge
@@ -390,7 +410,7 @@ Edge Graph::removeEdge(Vertex source, Vertex destination, string flight_data)
             }
         }
         if (reverse_list.size()) {
-            edge_count_list[destination].erase(source);
+            edge_dist_list[destination].erase(source);
         }
     }
     return e;
@@ -506,9 +526,9 @@ void Graph::clear()
 }
 
 int Graph::get_edge_count(Vertex source, Vertex dest) const {
-    if (edge_count_list.find(source) != edge_count_list.end()) {
-        if (edge_count_list[source].find(dest) != edge_count_list[source].end()) {
-            return edge_count_list[source][dest];
+    if (edge_dist_list.find(source) != edge_dist_list.end()) {
+        if (edge_dist_list[source].find(dest) != edge_dist_list[source].end()) {
+            return edge_dist_list[source][dest];
         }
     }
     return INT_MAX;
