@@ -39,8 +39,11 @@ Parser.o:
 main.o:
 	$(CXX) $(CXXFLAGS) main.cpp
 
-test: Parser.o Graph.o
-	$(LD) tests/tests.cpp Parser.o Graph.o $(LDFLAGS) -o test
+search_algos.o: Graph.o
+	$(CXX) $(CXXFLAGS) libraries/search_algos.cpp
+
+test: search_algos.o Parser.o Graph.o
+	$(LD) tests/tests.cpp search_algos.o Parser.o Graph.o $(LDFLAGS) -o test
 
 clean:
 	-rm -f *.o test $(EXENAME)
