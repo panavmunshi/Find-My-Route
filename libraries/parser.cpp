@@ -54,12 +54,14 @@ Graph* cust_lib::Parser::read_file() {
                 }
 
                 try {
-                    if (prev_source == data_arr[16] && prev_dest == data_arr[17]) {
+                    if (!(toReturn->edgeExists(data_arr[16], data_arr[17], data_arr[8] + data_arr[9]))) {
+                        toReturn->insertEdge(data_arr[16], data_arr[17], data_arr[8] + data_arr[9], Edge_Weight(std::stoi(data_arr[18]), std::stoi(data_arr[5]), std::stoi(data_arr[7]), data_arr[8] + data_arr[9]));
+                    }
+                    /*if (prev_source == data_arr[16] && prev_dest == data_arr[17]) {
                         string flight_details = data_arr[8] + data_arr[9];
                         if (!(prev_flight == flight_details)) {
                             toReturn->insertEdge(data_arr[16], data_arr[17], flight_details, Edge_Weight(std::stoi(data_arr[18]), std::stoi(data_arr[5]), std::stoi(data_arr[7]), flight_details));
                             prev_flight = flight_details;
-                            //cout << toReturn->getEdgeWeight(data_arr[16], data_arr[17], prev_flight) << endl;
                         }
                     } else {
                         prev_source = data_arr[16];
@@ -67,8 +69,7 @@ Graph* cust_lib::Parser::read_file() {
                         prev_flight = data_arr[8] + data_arr[9];
 
                         toReturn->insertEdge(data_arr[16], data_arr[17], prev_flight, Edge_Weight(std::stoi(data_arr[18]), std::stoi(data_arr[5]), std::stoi(data_arr[7]), prev_flight));
-                        //cout << toReturn->getEdgeWeight(data_arr[16], data_arr[17], prev_flight) << endl;
-                    }
+                    }*/
 
                 } catch(exception& e) {
                     #ifndef SUPRESS
