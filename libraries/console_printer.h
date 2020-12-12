@@ -13,6 +13,11 @@ string gen_arrow(size_t space, size_t arrow_size) {
 }
 
 void print_formatted(Graph* graph, vector<Vertex>& toPrint) {
+    if (toPrint.size() <= 1) {
+        cout << "Path between the choice of your airports doesn't exist. " << endl;
+        return;
+    }
+    
     size_t largest_len = 0;
     vector<vector<string>> print_data;
     print_data.push_back(vector<string>());
