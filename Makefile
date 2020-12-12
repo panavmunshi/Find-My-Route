@@ -1,5 +1,5 @@
 EXENAME = finalproj
-OBJS = Graph.o Parser.o main.o search_algos.o
+OBJS = graph.o parser.o main.o search_algos.o
 
 CXX = clang++
 CXXFLAGS = $(CS225) -std=c++1y -stdlib=libc++ -c -g -O0 -pedantic -Wall -Werror -Wfatal-errors -Wextra -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function
@@ -30,19 +30,19 @@ output_msg: ; $(CLANG_VERSION_MSG)
 $(EXENAME): output_msg $(OBJS)
 	$(LD) $(OBJS) $(LDFLAGS) -o $(EXENAME)
 
-Graph.o:
-	$(CXX) $(CXXFLAGS) libraries/Graph.cpp
+graph.o:
+	$(CXX) $(CXXFLAGS) libraries/graph.cpp
 
-Parser.o:
-	$(CXX) $(CXXFLAGS) libraries/Parser.cpp	
+parser.o:
+	$(CXX) $(CXXFLAGS) libraries/parser.cpp	
 
 main.o:
 	$(CXX) $(CXXFLAGS) main.cpp
 
-search_algos.o: Graph.o
+search_algos.o: graph.o
 	$(CXX) $(CXXFLAGS) libraries/search_algos.cpp
 
-test: search_algos.o Parser.o Graph.o
+test: search_algos.o parser.o graph.o
 	$(LD) tests/tests.cpp search_algos.o Parser.o Graph.o $(LDFLAGS) -o test
 
 clean:
