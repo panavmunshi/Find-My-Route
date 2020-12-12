@@ -16,7 +16,7 @@ Graph* cust_lib::Parser::read_file() {
     if (file_obj.is_open()) {
         // Proceed to parse file.
         // More space for good measure :)
-        string data_arr[35], curr_line = "", prev_source = "", prev_dest = "", prev_flight = "";
+        string data_arr[35], curr_line = "", prev_flight = "";
         std::set<string> vertex_set;
 
         std::getline(file_obj, curr_line);
@@ -55,17 +55,13 @@ Graph* cust_lib::Parser::read_file() {
 
                 try {
                     if (!toReturn->edgeExists(data_arr[16], data_arr[17])) {
-                        int dist = stoi(data_arr[18]);
-                        int arr = stoi(data_arr[7]);
-                        int dept = stoi(data_arr[5]);
-
+                        int dist = stoi(data_arr[18]), arr = stoi(data_arr[7]), dept = stoi(data_arr[5]);
                         toReturn->insertEdge(data_arr[16], data_arr[17], dist);
-                        //toReturn->setEdgeWeight(data_arr[16], data_arr[17], dist);
                         toReturn->insertDetails(data_arr[16], data_arr[17], data_arr[8] + data_arr[9], arr, dept);
                     } else {
-                        int arr = stoi(data_arr[7]);
-                        int dept = stoi(data_arr[5]);
+                        int arr = stoi(data_arr[7]), dept = stoi(data_arr[5]);
                         toReturn->insertDetails(data_arr[16], data_arr[17], data_arr[8] + data_arr[9], arr, dept);
+                        prev_flight = data_arr[8] + data_arr[9];
                     }
 
                 } catch(exception& e) {
