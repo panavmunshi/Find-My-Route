@@ -7,9 +7,9 @@
 During the first week, we finalized our idea and what the output for our program was going to
 be and how we would go about achieving our goal. We decided upon three approaches:
 
-- A breadth-first search (BFS) traversal to find the most efficient path from a given source point to the desired destination input by the user.
-- A* search algorithm, a very practical algorithm used in travel routing systems, such as the one like ours, to obtain the most efficient path from point A to point B with the smallest ‘cost’, in this case, the least amount of time taken (as per our used dataset). This uses an extra heuristic function that gives priority to nodes that are more time efficient - unlike Dijkstra's algorithm.
-- Dijkstra’s Algorithm, a similar approach that produces a shortest-path tree that is traversed by fixing a node as the source node, and finding the shortest paths to all other nodes in the graph.
+- A breadth-first search (BFS) traversal to find the most efficient path from a given source point to the desired destination input by the user (shortest path in terms of stopovers - not accounting for distance).
+- A* search algorithm, a very practical algorithm used in travel routing systems, such as the one like ours, to obtain the most efficient path from point A to point B with the smallest ‘cost’, in this case, the least distance traveled (as per our used dataset). This uses an extra heuristic function that gives priority to nodes that are more cost efficient - unlike Dijkstra's algorithm.
+- Dijkstra’s Algorithm, a similar approach that produces a shortest-path tree that is traversed by fixing a node as the source node, and finding the shortest paths to all other nodes in the graph, while also accounting for distance.
 
 We began researching on these algorithms and made a brief plan on how we would go about finishing each of these approaches. We also assigned each of these approaches, and the rest of the project deliverables to different group members.
 
