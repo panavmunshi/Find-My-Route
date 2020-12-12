@@ -58,9 +58,10 @@ void print_formatted(Graph* graph, vector<Vertex>& toPrint) {
         } else {
             vector<string>& flight_det = print_data[prt];
             cout << setfill(' ') << setw(5 + largest_len);
-            for (size_t idx = 0; idx < flight_det.size(); idx++) {
+            for (size_t idx = 0; idx < flight_det.size() - 1; idx++) {
                 cout << flight_det[idx] << setfill(' ') << setw(9 + largest_len);
             }
+            cout << flight_det[flight_det.size() - 1];
             cout << endl;
         }
     }
