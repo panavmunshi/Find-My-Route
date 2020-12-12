@@ -178,6 +178,7 @@ public:
      * Hence, an error is not thrown when it fails to insert an edge.
      * @param source - one vertex the edge is connected to
      * @param destination - the other vertex the edge is connected to
+     * @param weight - weight of the edge. 
      * @return whether inserting the edge was successful
      */
     bool insertEdge(Vertex source, Vertex destination, int weight);
@@ -229,8 +230,17 @@ public:
     bool isDirected() const;
 
     void clear();
-
-    int get_edge_count(Vertex dest, Vertex source) {
+    
+    /**
+     * This function returns the calculated distance between destination and source. 
+     * This value is widely used by A* search. 
+     * 
+     * @param dest: Destination Vertex.
+     * @param source: Source Vertex.
+     * 
+     * @return : Returns distance from Source to Destination. If doesn't exist, returns INT_MAX.
+     */
+    int get_edge_dist(Vertex dest, Vertex source) {
         if (edge_dist_list.find(source) != edge_dist_list.end()) {
             if (edge_dist_list[source].find(dest) != edge_dist_list[source].end()) {
                 return edge_dist_list[source][dest];
@@ -247,6 +257,12 @@ public:
 
 private:
     mutable unordered_map<Vertex, unordered_map<Vertex, Edge>> adjacency_list;
+
+    /**
+     * This nested map stores the distances from Vertex A to B for any parent child connection, i.e.
+     * if A is an indirect child of C, the map will store the distance from C to A in it as well.
+     * 
+     * This is used by the heuristics function. */
     mutable unordered_map<Vertex, unordered_map<Vertex, int>> edge_dist_list;
 
     bool weighted;

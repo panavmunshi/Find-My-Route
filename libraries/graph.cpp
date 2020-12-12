@@ -245,13 +245,17 @@ bool Graph::insertEdge(Vertex source, Vertex destination, int weight)
         adjacency_list[source] = unordered_map<Vertex, Edge>();
     }
 
+    /* If entry doesn't exist within the distance list, add it. */
     if (edge_dist_list.find(destination) == edge_dist_list.end()) {
         edge_dist_list[destination] = unordered_map<Vertex, int>();
     }
         //source vertex exists
     adjacency_list[source][destination] = Edge(source, destination, weight, "");
+
+    /* Set the value at destination, source as weight. */
     edge_dist_list[destination][source] = weight;
 
+    /* Calculate distance for any children of source and add it to destination accordingly. */
     for (auto it = edge_dist_list.begin(); it != edge_dist_list.end(); ++it) {
         if (it->first != source && it->first != destination) {
             unordered_map<Vertex, int>& map_val = edge_dist_list[it->first];
