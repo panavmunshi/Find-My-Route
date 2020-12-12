@@ -1,5 +1,6 @@
 #include "tests.h"
 using namespace cust_lib;
+using namespace std::chrono;
 
 void test_cases::test_graph(Graph* test_obj) {
     /* Run test cases. */
@@ -49,6 +50,48 @@ void test_cases::test_a_star(Graph* test_obj) {
     cout << endl;
 }
 
+void test_cases::test_time(Graph* test_obj) {
+    search_algos obj;
+    printf("Testing a_star..\n");
+    auto start_a = std::chrono::high_resolution_clock::now();
+
+    vector<Vertex> result = obj.search(test_obj, "CMI", "PIH", false);
+
+    auto stop_a = std::chrono::high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop_a - start_a);
+    cout << "Time taken: " <<  duration.count() << endl;
+
+    cout << "Testing dijkstra" << endl;
+
+    auto start_d = std::chrono::high_resolution_clock::now();
+    vector<Vertex> result_n = obj.search(test_obj, "CMI", "PIH", true);
+    auto stop_d = std::chrono::high_resolution_clock::now();
+    auto duration_d = duration_cast<microseconds>(stop_a - start_a);
+    cout << "Time taken: " <<  duration_d.count() << endl;
+
+}
+
+void test_cases::test_bfs(Graph* search_obj) {
+    search_algos obj;
+
+    vector<Vertex> result = obj.BFS(search_obj, "SFO", "SAN");
+
+    for (Vertex v : result) {
+        cout << v << " -> ";
+    }
+    cout << endl;
+}
+
+void test_cases::test_landmark(Graph* search_obj) {
+    search_algos obj;
+
+    vector<Vertex> result = obj.landmark_search(search_obj, "CMI", "ORD", "ATL");
+    for (Vertex v : result) {
+        cout << v << " -> ";
+    }
+    cout << endl;
+}
+
 int main() {
     string loc = "dataset/1987.csv";
 
@@ -60,15 +103,21 @@ int main() {
 
     /*printf("Testing heuristics. \n");
     test_cases::test_heuristic();*/
-    //test_cases::test_graph();
-    //test_cases::print_graph();
 
-    printf("Testing A star\n");
-    test_cases::test_a_star(search_obj);
+    //test_cases::test_graph();
+    //test_cases::print_graph(search_obj);
+
+    /*printf("Testing A star\n");
+    test_cases::test_a_star(search_obj);*/
 
     /*printf("Testing heuristics. \n");
     test_cases::test_heuristic(search_obj);*/
+    //test_cases::test_time(search_obj);
 
+    //test_cases::test_bfs(search_obj);
+
+    test_cases::test_landmark(search_obj);
+    
     delete search_obj;
     return 0;
 }
