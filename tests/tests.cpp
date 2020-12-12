@@ -9,7 +9,7 @@ bool test_cases::test_vertices(Graph* search_obj) {
     return vertices.size() == num_vertices;
 }
 
-bool test_cases::test_dijksta_v_bfs(Graph* search_obj) {
+bool test_cases::test_dijkstra_v_bfs(Graph* search_obj) {
     search_algos obj;
 
     vector<Vertex> first_d = obj.search(search_obj, "CMI", "ATL", true);
@@ -45,11 +45,38 @@ bool test_cases::test_dijksta_v_bfs(Graph* search_obj) {
     return edge_com_f && edge_com_s && dist_comp_f && dist_comp_f;
 }
 
+bool test_cases::test_dijkstra_v_a_star(Graph* search_obj) {
+    bool toReturn = true;
+    search_algos obj;
+    
+    vector<Vertex> as = obj.search(search_obj, "CMI", "TEX", false);
+    vector<Vertex> dk = obj.search(search_obj, "CMI", "TEX", true);
+
+    if (as.size() != dk.size()) {
+        return false;
+    }
+
+    for (size_t i = 0; i < as.size(); i++) {
+        if (as[i] != dk[i]) {
+            toReturn = false;
+            break;
+        }
+    }
+
+    return toReturn;
+}
+
 int main() {
     string loc = "dataset/1987.csv";
     Parser curr_parser(loc);
     Graph* search_obj = curr_parser.read_file();
     
+    if (search_obj == NULL) {
+        cout << "Graph obj NULL. Unable to alloc Graph* obj. Check if 1987.csv is present" << endl;
+        return 0;
+    }
+
+
     cout << "Testing test_vertices.." << endl;
     bool test_v = test_cases::test_vertices(search_obj);
 
@@ -59,14 +86,24 @@ int main() {
         cout << "Failed test_vertices" << endl;
     }
 
-    cout << "Testing test_dijksta_v_bfs.." << endl;
-    bool test_d = test_cases::test_dijksta_v_bfs(search_obj);
+    cout << endl;
+    cout << "Testing test_dijkstra_v_bfs.." << endl;
+    bool test_d = test_cases::test_dijkstra_v_bfs(search_obj);
+
+    if (test_d) {
+        cout << "Passed test_dijkstra_v_bfs" << endl;
+    } else {
+        cout << "Failed test_dijkstra_v_bfs" << endl;
+    }
 
     cout << endl;
-    if (test_d) {
-        cout << "Passed test_dijksta_v_bfs" << endl;
+    cout << "Testing test_dijkstra_v_a_star.." << endl;
+    bool test_e = test_cases::test_dijkstra_v_a_star(search_obj);
+    
+    if (test_e) {
+        cout << "Passed test_dijkstra_v_a_star" << endl;
     } else {
-        cout << "Failed test_dijksta_v_bfs" << endl;
+        cout << "Failed test_dijkstra_v_a_star" << endl;
     }
 
     delete search_obj;
