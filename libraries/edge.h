@@ -21,6 +21,7 @@ typedef string Vertex;
 class Edge
 {
   public:
+    /* This map stores the arrival and departure time for every flight from source to destination. */
     std::unordered_map<string, std::pair<int, int>> flight_details;
 
     Vertex source; /**< The source of the edge **/
@@ -93,6 +94,14 @@ class Edge
         return this->weight;
     }
 
+    /**
+     * THis function inserts the new flight data into the flight_details map if
+     * the given flight doesn't already exist.
+     * 
+     * @param flight: flight data, i.e. flight name + tail no.
+     * @param arrival: arrival time (24hrs format)
+     * @param dept: departure time (24hrs format)
+     */ 
     void insertData(string flight, int arrival, int dept) {
         if (flight_details.find(flight) == flight_details.end()) {
             flight_details.insert({flight, {dept, arrival}});
