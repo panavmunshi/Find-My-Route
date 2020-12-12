@@ -23,15 +23,15 @@ int main() {
     }
 
     cout << "Successfully read file! (Errors printed to console if any)" << endl;
-    cout << "/*****************************************************************************************************************/" << endl;
+    cout << "/****************************************************************************************************************************************/" << endl;
 
     int opt_code = 0;
     string args;
     while (true) {
         cout << "Please choose one of the following: " << endl;
-        cout << "Enter '1': Shortest Flight route from Point A to Point B. (Using Dijkstra's Algorithm)" << endl;
-        cout << "Enter '2': Shortest Flight route from Point A to Point B through Point C. (Using Landmark Path and A* search)" << endl;
-        cout << "Enter '3': To find a path from Point A to Point B (Using BFS - this not be the shortest). " << endl;
+        cout << "Enter '1': Shortest Flight route from Point A to Point B w.r.t. distance. (Using Dijkstra's Algorithm)" << endl;
+        cout << "Enter '2': Shortest Flight route from Point A to Point B through Point C w.r.t. distance. (Using Landmark Path and A* search)" << endl;
+        cout << "Enter '3': Least number of stops from Point A to Point B (Using BFS - this may result in a longer route w.r.t. distance). " << endl;
         cout << "Choice: ";
         cin >> args;
         try {
