@@ -6,6 +6,12 @@
 
 using namespace std;
 
+string gen_arrow(size_t space, size_t arrow_size) {
+    stringstream ss;
+    ss << string(space, ' ') << string(arrow_size - 1, '-') << '>' << string(space, ' ');
+    return ss.str();
+}
+
 void print_formatted(Graph* graph, vector<Vertex>& toPrint) {
     size_t largest_len = 0;
     vector<vector<string>> print_data;
@@ -34,7 +40,7 @@ void print_formatted(Graph* graph, vector<Vertex>& toPrint) {
             dept << setfill('0') << setw(4) << it->second.first;
             arr << setfill('0') << setw(4) << it->second.second;
 
-            string flight_detail = it->first + " -> Dep: " + dept.str() + " -- Arr: " + arr.str();
+            string flight_detail = it->first + " -> Dep: " + dept.str() + "hrs" + " - Arr: " + arr.str() + "hrs";
             size_t flight_len = flight_detail.length();
             largest_len = flight_len > largest_len ? flight_len : largest_len;
             ++it;
@@ -52,7 +58,7 @@ void print_formatted(Graph* graph, vector<Vertex>& toPrint) {
         if (prt == 0) {
             vector<string>& airports = print_data[0];
             for (size_t idx = 0; idx < airports.size() - 1; idx++) {
-                cout << airports[idx] << setw(9 + largest_len);
+                cout << airports[idx] << gen_arrow(3, largest_len);
             }
             cout << airports[airports.size() - 1] << endl;
         } else {
