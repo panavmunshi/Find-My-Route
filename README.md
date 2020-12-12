@@ -46,6 +46,8 @@ We suggest the user to look into airportcode.txt before running the program. A f
 
 # Running Test Cases
 We have compiled a small suite of test cases that could be run on our graph. To run them, do the following.
+**NOTE:** The test case relies on 1987.csv. Therefore, unzip the 1987.zip and then proceed to run the test cases. 
+
 - Run `make clean && make test` in the linux shell. This will create the test executable. 
 - Run `./test` to run the test executable file. 
 - The output on the terminal screen will mention if the test cases passed or not. 
