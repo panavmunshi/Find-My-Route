@@ -1,5 +1,6 @@
 #include "libraries/Parser.h"
 #include "libraries/search_algos.h"
+#include "libraries/console_printer.h"
 
 int main() {
     string file_loc = "";
@@ -72,6 +73,9 @@ int main() {
             }
 
             vector<Vertex> shortest_path = search_obj.search(curr_graph, source, destination, true);
+            cout << "Printing Flight Data" << endl;
+            cout << endl;
+            print_formatted(curr_graph, shortest_path);
             break;
         }
 
@@ -88,7 +92,7 @@ int main() {
                 }
 
                 cout << "Please enter the landmark airport: ";
-                cin >> source;
+                cin >> landmark;
                 cout << endl;
 
                 if (!curr_graph->vertexExists(landmark)) {
@@ -109,6 +113,9 @@ int main() {
             }
 
             vector<Vertex> landmark_path = search_obj.landmark_search(curr_graph, source, landmark, destination);
+            cout << "Printing Flight Data" << endl;
+            cout << endl;
+            print_formatted(curr_graph, landmark_path);
             break;
         }
 
@@ -137,10 +144,14 @@ int main() {
             }
 
             vector<Vertex> bfs_path = search_obj.BFS(curr_graph, source, destination);
+            cout << "Printing Flight Data" << endl;
+            cout << endl;
+            print_formatted(curr_graph, bfs_path);
             break;
         }
     }
 
+    cout << endl;
     cout << "Successfully ending program" << endl;
 
     delete curr_graph;
