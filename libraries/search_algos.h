@@ -8,6 +8,7 @@ namespace cust_lib {
     class search_algos {
         public:
             vector<Vertex> search(Graph* search_graph, Vertex source, Vertex destination, bool isDijkstra);
+            vector<Vertex> BFS(Graph* search_graph, Vertex source, Vertex dest);
         private:
             int calc_heuristic(Graph* graph, Vertex A, Vertex B);
             struct search_p_queue {
