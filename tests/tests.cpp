@@ -15,7 +15,7 @@ void test_cases::test_heuristic(Graph* test_obj) {
     vector<Vertex> vertice_list = test_obj->getVertices();
 
     for (Vertex v : vertice_list) {
-        int return_val = test_obj->get_edge_count("SFO", v);
+        int return_val = test_obj->get_edge_dist("SFO", v);
 
         if (return_val != INT_MAX) {
             cout << "From: " << v << " To: " << "SFO" << " Edges: " << return_val << endl;
