@@ -1,8 +1,8 @@
 EXENAME = finalproj
-OBJS = Graph.o Parser.o main.o
+OBJS = Graph.o Parser.o main.o search_algos.o
 
 CXX = clang++
-CXXFLAGS = $(CS225) -std=c++1y -stdlib=libc++ -c -g -O0
+CXXFLAGS = $(CS225) -std=c++1y -stdlib=libc++ -c -g -O0 -pedantic -Wall -Werror -Wfatal-errors -Wextra -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function
 LD = clang++
 LDFLAGS = -std=c++1y -stdlib=libc++ -lc++abi -lm
 
