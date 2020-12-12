@@ -8,7 +8,7 @@ int main() {
     cust_lib::search_algos search_obj;
 
     while (true) {
-        cout << "Enter the location of the dataset, or type 'default' for default dataset(dataset/1987.csv): ";
+        cout << "Enter the location of the dataset, or type 'default' for default dataset (dataset/1987.csv): ";
         cin >> file_loc;
         if (file_loc == "default") {
             file_loc = "dataset/1987.csv";
@@ -23,7 +23,7 @@ int main() {
     }
 
     cout << "Successfully read file! (Errors printed to console if any)" << endl;
-    cout << "\n/***********************************************/\n" << endl;
+    cout << "/*****************************************************************************************************************/" << endl;
 
     int opt_code = 0;
     string args;
@@ -31,128 +31,130 @@ int main() {
         cout << "Please choose one of the following: " << endl;
         cout << "Enter '1': Shortest Flight route from Point A to Point B. (Using Dijkstra's Algorithm)" << endl;
         cout << "Enter '2': Shortest Flight route from Point A to Point B through Point C. (Using Landmark Path and A* search)" << endl;
-        cout << "Enter '3': To find a path from Point A to Point B (Using BFS - may not be the shortest). " << endl;
-        
+        cout << "Enter '3': To find a path from Point A to Point B (Using BFS - this not be the shortest). " << endl;
+        cout << "Choice: ";
         cin >> args;
         try {
             opt_code = std::stoi(args);
             if (opt_code > 3 || opt_code < 1) {
-                cout << "Error: Invalid opt_code.  Please choose between option 1 to 3. \n" << endl;
+                cout << "Error: Invalid input.  Please choose between option 1 to 3. \n" << endl;
                 continue;
-            } else {
-                break;
             }
         } catch(exception& e) {
             cout << "Error: Invalid input. Please enter a number. \n" << endl;
+            continue;
         }
-    }
 
-    switch (opt_code) {
-        case 1: {
-            Vertex source, destination;
-            while (true) {
-                cout << "Please enter the source airport: ";
-                cin >> source;
-                cout << endl;
+        switch (opt_code) {
+            case 1: {
+                Vertex source, destination;
+                while (true) {
+                    cout << "Please enter the source airport: ";
+                    cin >> source;
 
-                if (!curr_graph->vertexExists(source)) {
-                    cout << "INVALID AIRPORT! Try again!. " << endl;
-                    continue;
+                    if (!curr_graph->vertexExists(source)) {
+                        cout << "INVALID AIRPORT! Try again!. " << endl;
+                        continue;
+                    }
+
+                    cout << "Please enter the destination airport: ";
+                    cin >> destination;
+
+                    if (!curr_graph->vertexExists(destination)) {
+                        cout << "INVALID AIRPORT! Try again!. " << endl;
+                        continue;
+                    }
+
+                    break;
                 }
 
-                cout << "Please enter the destination airport: ";
-                cin >> destination;
+                vector<Vertex> shortest_path = search_obj.search(curr_graph, source, destination, true);
+                cout << "Printing Flight Data" << endl;
                 cout << endl;
-
-                if (!curr_graph->vertexExists(destination)) {
-                    cout << "INVALID AIRPORT! Try again!. " << endl;
-                    continue;
-                }
-
+                print_formatted(curr_graph, shortest_path);
                 break;
             }
 
-            vector<Vertex> shortest_path = search_obj.search(curr_graph, source, destination, true);
-            cout << "Printing Flight Data" << endl;
-            cout << endl;
-            print_formatted(curr_graph, shortest_path);
-            break;
-        }
+            case 2: {
+                Vertex source, destination, landmark;
+                while (true) {
+                    cout << "Please enter the source airport: ";
+                    cin >> source;
 
-        case 2: {
-            Vertex source, destination, landmark;
-            while (true) {
-                cout << "Please enter the source airport: ";
-                cin >> source;
-                cout << endl;
+                    if (!curr_graph->vertexExists(source)) {
+                        cout << "INVALID AIRPORT! Try again!. " << endl;
+                        continue;
+                    }
 
-                if (!curr_graph->vertexExists(source)) {
-                    cout << "INVALID AIRPORT! Try again!. " << endl;
-                    continue;
+                    cout << "Please enter the landmark airport: ";
+                    cin >> landmark;
+
+                    if (!curr_graph->vertexExists(landmark)) {
+                        cout << "INVALID AIRPORT! Try again!. " << endl;
+                        continue;
+                    }
+
+                    cout << "Please enter the destination airport: ";
+                    cin >> destination;
+
+                    if (!curr_graph->vertexExists(destination)) {
+                        cout << "INVALID AIRPORT! Try again!. " << endl;
+                        continue;
+                    }
+
+                    break;
                 }
 
-                cout << "Please enter the landmark airport: ";
-                cin >> landmark;
+                vector<Vertex> landmark_path = search_obj.landmark_search(curr_graph, source, landmark, destination);
+                cout << "Printing Flight Data" << endl;
                 cout << endl;
-
-                if (!curr_graph->vertexExists(landmark)) {
-                    cout << "INVALID AIRPORT! Try again!. " << endl;
-                    continue;
-                }
-
-                cout << "Please enter the destination airport: ";
-                cin >> destination;
-                cout << endl;
-
-                if (!curr_graph->vertexExists(destination)) {
-                    cout << "INVALID AIRPORT! Try again!. " << endl;
-                    continue;
-                }
-
+                print_formatted(curr_graph, landmark_path);
                 break;
             }
 
-            vector<Vertex> landmark_path = search_obj.landmark_search(curr_graph, source, landmark, destination);
-            cout << "Printing Flight Data" << endl;
-            cout << endl;
-            print_formatted(curr_graph, landmark_path);
-            break;
-        }
+            case 3: {
+                Vertex source, destination;
+                while (true) {
+                    cout << "Please enter the source airport: ";
+                    cin >> source;
 
-        case 3: {
-            Vertex source, destination;
-            while (true) {
-                cout << "Please enter the source airport: ";
-                cin >> source;
-                cout << endl;
+                    if (!curr_graph->vertexExists(source)) {
+                        cout << "INVALID AIRPORT! Try again!. " << endl;
+                        continue;
+                    }
 
-                if (!curr_graph->vertexExists(source)) {
-                    cout << "INVALID AIRPORT! Try again!. " << endl;
-                    continue;
+                    cout << "Please enter the destination airport: ";
+                    cin >> destination;
+
+                    if (!curr_graph->vertexExists(destination)) {
+                        cout << "INVALID AIRPORT! Try again!. " << endl;
+                        continue;
+                    }
+
+                    break;
                 }
 
-                cout << "Please enter the destination airport: ";
-                cin >> destination;
+                vector<Vertex> bfs_path = search_obj.BFS(curr_graph, source, destination);
+                cout << "Printing Flight Data" << endl;
                 cout << endl;
-
-                if (!curr_graph->vertexExists(destination)) {
-                    cout << "INVALID AIRPORT! Try again!. " << endl;
-                    continue;
-                }
-
+                print_formatted(curr_graph, bfs_path);
                 break;
             }
+        }
+        
+        cout << endl;
+        cout << "Enter 'x' to try another search. Enter anything else to exit." << endl;
+        cout << "Choice: ";
+        string exit_choice;
+        cin >> exit_choice;
 
-            vector<Vertex> bfs_path = search_obj.BFS(curr_graph, source, destination);
-            cout << "Printing Flight Data" << endl;
-            cout << endl;
-            print_formatted(curr_graph, bfs_path);
+        if (exit_choice != "x") {
             break;
         }
     }
 
     cout << endl;
-    cout << "Successfully ending program" << endl;
+    cout << "Successfully ending program. Thank you!" << endl;
 
     delete curr_graph;
     return 0;
