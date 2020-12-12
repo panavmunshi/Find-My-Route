@@ -39,6 +39,12 @@ We suggest the user to look into airportcode.txt before running the program. A f
 - SFO (San Francisco),
 - and so on.
 
+# Running Test Cases
+We have compiled a small suite of test cases that could be run on our graph. To run them, do the following.
+- Run `make clean && make test` in the linux shell. This will create the test executable. 
+- Run `./test` to run the test executable file. 
+- The output on the terminal screen will mention if the test cases passed or not. 
+
 # Dataset
 The following is the website from where we obtained our dataset. Though we haven't tested them all, we are confident that our program should work will all of them listed. 
 
