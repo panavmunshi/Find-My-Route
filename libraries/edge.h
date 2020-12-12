@@ -21,6 +21,8 @@ typedef string Vertex;
 class Edge
 {
   public:
+    std::unordered_map<string, std::pair<int, int>> flight_details;
+
     Vertex source; /**< The source of the edge **/
     Vertex dest; /**< The destination of the edge **/
 
@@ -92,9 +94,9 @@ class Edge
     }
 
     void insertData(string flight, int arrival, int dept) {
-        flight_name.push_back(flight);
-        arrival_time.push_back(arrival);
-        dept_time.push_back(dept);
+        if (flight_details.find(flight) == flight_details.end()) {
+            flight_details.insert({flight, {dept, arrival}});
+        }
     }
 
     /**
@@ -112,7 +114,5 @@ class Edge
 private:
     string label; /**< The edge label **/
     int weight; /**< The edge weight (if in a weighed graph) **/
-    std::vector<string> flight_name;
-    std::vector<int> arrival_time;
-    std::vector<int> dept_time;
+
 };
