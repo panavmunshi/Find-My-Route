@@ -76,7 +76,7 @@ vector<Vertex> search_algos::search(Graph* search_graph, Vertex source, Vertex d
 
 int search_algos::calc_heuristic(Graph* graph, Vertex A, Vertex B) {
     /* Call the graph's internal heuristic function and return its value. */
-    return graph->get_edge_count(A, B);
+    return graph->get_edge_dist(A, B);
 }
 
 vector<Vertex> search_algos::BFS(Graph* search_obj, Vertex source, Vertex dest)
