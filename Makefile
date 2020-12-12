@@ -43,7 +43,7 @@ search_algos.o: graph.o
 	$(CXX) $(CXXFLAGS) libraries/search_algos.cpp
 
 test: search_algos.o parser.o graph.o
-	$(LD) tests/tests.cpp search_algos.o Parser.o Graph.o $(LDFLAGS) -o test
+	$(LD) tests/tests.cpp search_algos.o parser.o graph.o $(LDFLAGS) -o test
 
 clean:
 	-rm -f *.o test $(EXENAME)
