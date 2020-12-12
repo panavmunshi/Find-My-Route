@@ -27,7 +27,7 @@ void print_formatted(Graph* graph, vector<Vertex>& toPrint) {
     }
 
     for (size_t idx = 1; idx < toPrint.size(); idx++) {
-        Edge flight_edge = graph->getEdge(toPrint[idx], toPrint[idx - 1]);
+        Edge flight_edge = graph->getEdge(toPrint[idx - 1], toPrint[idx]);
         size_t num_flights = flight_edge.flight_details.size();
         bool is_less = false;
         if (print_data.size() - 1 < num_flights) {
