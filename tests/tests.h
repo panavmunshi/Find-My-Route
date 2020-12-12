@@ -6,13 +6,11 @@
 namespace cust_lib {
     class test_cases {
         public:
-            static void test_graph(Graph* obj);
-            static void test_heuristic(Graph* obj);
-            static void test_vertex(Graph* obj);
-            static void print_graph(Graph* obj);
-            static void test_a_star(Graph* obj);
-            static void test_time(Graph* obj);
-            static void test_bfs(Graph* obj);
-            static void test_landmark(Graph* obj);
+
+            /* Checks the number of vertices present in the graph. */
+            static bool test_vertices(Graph* obj);
+
+            /* Runs bfs vs dijkstra. */
+            static bool test_dijksta_v_bfs(Graph* obj);
     };
 }
