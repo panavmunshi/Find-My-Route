@@ -52,3 +52,58 @@ vector<Vertex> search_algos::search(Graph* search_graph, Vertex source, Vertex d
 int search_algos::calc_heuristic(Graph* graph, Vertex A, Vertex B) {
     return graph->get_edge_count(A, B);
 }
+
+vector<Vertex> search_algos::BFS(Graph* search_obj, Vertex source, Vertex dest)
+{
+    unordered_map<Vertex, bool> isVisited;
+    unordered_map<Vertex, Vertex> came_from;
+    vector<Vertex> vertex_list = search_obj->getVertices();
+    vector<Vertex> toReturn;
+
+    for (Vertex v : vertex_list) {
+        isVisited[v] = false;
+    }
+
+    queue<Vertex> queue; // for BFS
+ 
+    isVisited[source] = true;
+    came_from[source] = "NONE";
+
+    queue.push(source); //enqueue node
+
+    while(queue.empty() == false){
+        Vertex curr = queue.front();
+        queue.pop(); // 
+        cout << "Node right now: " << curr << endl;
+        if (curr == dest) {
+            break;
+        }
+
+        vector<Vertex> adjacent_list = search_obj->getAdjacent(curr);
+        for (Vertex q : adjacent_list) {
+            if (!isVisited[q]) {
+                cout << "Neighbour " << q << endl;
+                isVisited[q] = true;
+                came_from[q] = curr;
+                queue.push(q);
+            }
+        }
+    }
+
+    std::stack<Vertex> reversal_stack;
+    Vertex current = dest;
+
+    while (current != "NONE") {
+        reversal_stack.push(current);
+        if (came_from.find(current) == came_from.end()) {
+            return vector<Vertex>();
+        }
+        current = came_from[current];
+    }
+
+    while (!reversal_stack.empty()) {
+        toReturn.push_back(reversal_stack.top());
+        reversal_stack.pop();
+    }
+    return toReturn;
+}
