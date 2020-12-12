@@ -107,3 +107,33 @@ vector<Vertex> search_algos::BFS(Graph* search_obj, Vertex source, Vertex dest)
     }
     return toReturn;
 }
+
+vector<Vertex> search_algos::landmark_search(Graph* search_graph, Vertex source, Vertex landmark, Vertex destination) {
+    vector<Vertex> toReturn;
+    vector<Vertex> a_to_b = search(search_graph, source, landmark, false);
+    if (a_to_b.empty()) {
+        return toReturn;
+    }
+
+    vector<Vertex> b_to_c = search(search_graph, landmark, destination, false);
+    if (b_to_c.empty()) {
+        return toReturn;
+    }
+
+    toReturn.push_back(source);
+    for (Vertex v : a_to_b) {
+        if (v != source && v != landmark) {
+            toReturn.push_back(v);
+        }
+    }
+
+    toReturn.push_back(landmark);
+    for (Vertex q : b_to_c) {
+        if (q != landmark && q != destination) {
+            toReturn.push_back(q);
+        }
+    }
+
+    toReturn.push_back(destination);
+    return toReturn;
+}
