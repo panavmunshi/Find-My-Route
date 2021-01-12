@@ -55,7 +55,7 @@ We have compiled a small suite of test cases that could be run on our graph. To 
 - The output on the terminal screen will mention if the test cases passed or not. 
 
 # Dataset
-The following is the website from where we obtained our dataset. Though we haven't tested them all, we are confident that our program should work will all of them listed. 
+The following is the website from where we obtained our dataset. Though we haven't tested them all, we are confident that our program will work with all of listed datasets. 
 
 **URL**: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/HG7NV7
 
